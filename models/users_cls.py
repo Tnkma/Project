@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Defines both plumbers and clients models here """
 from models import BaseUser
-from sqlalchemy import Column, Integer, String, Float, Text, relationship
+from sqlalchemy import Column, String, Float, Text, relationship
 
 
 class Client(BaseUser):
