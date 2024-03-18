@@ -3,14 +3,16 @@
 
 from datetime import datetime
 import models
+from routes import app
 from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
+db = SQLAlchemy(app)
 if models.storage_db == "db":
     Base = declarative_base()
-
 
 class BaseUser(db.model, UserMixin):
     """The Base User for clients and plumbers"""
@@ -46,4 +48,4 @@ class JobOffer(db.model):
     
     def __repr__(self):
         """Returns the string representation of JobOffer"""
-        return f"JobOffer('{self.job_title}', '{self.content}', '{self.date_posted}')"
+        return f"JobOffer('{self.job_title}', '{self.date_posted}')"

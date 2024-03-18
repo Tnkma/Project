@@ -2,10 +2,11 @@
 """ Storage Class for the database """
 from models.base import BaseUser, JobOffer, Base
 from models.users_cls import Client, Plumber
-import sqlalchemy
 import models
-from sqlalchmey import create_engine
-from sqlalchmey.orm import scoped_session, sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from models import classes
+from flask import current_app
 
 class DataStorage:
     """ Interacts with our mysql database """
@@ -14,18 +15,19 @@ class DataStorage:
     
     def __init__(self):
         """ instatiate the datastorage object """
-        MYSQL_USER = MYSQL_USER
-        MYSQL_PWD = MYSQL_PWD
-        MYSQL_HOST = MYSQL_HOST
-        DB_NAME = DB_NAME
-        self.__engine = create_engine('mysql+pymysql://{}:{}@{}/{}'.
-                                      format(MYSQL_USER = 'jobatuser',
-                                             MYSQL_PWD = 'Jobat@password',
-                                             MYSQL_HOST = 'localhost',
-                                             DB_NAME = 'jobat_base'
-                                             ))
+        db_uri = current_app.config['SQLALCHEMY_DATABASE_URI']
+        self.__engine = create_engine(db_uri)
         Base.metadata.drop_all(self.__engine)
-        
+    
+    def all(self, cls=None):
+        """ Returns a dictionary of all the objects in the database """
+        if cls is None:
+            return self.__session.query(Client).all()
+        if cls not in classes.values():
+            return None
+        all_cls = models.storage.all(cls)
+        return all_cls
+    
     
     def add_new(self, obj):
         """ Add the object to the current database session """
